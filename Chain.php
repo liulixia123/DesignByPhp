@@ -14,6 +14,14 @@
 class Request
 {
     // getter and setter but I don't want to generate too much noise in handlers
+    public $verb;
+    public $key;
+    public function getVerb(){
+        return $this->$verb;
+    }
+    public function getKey(){
+        return $this->$key;
+    }
 }
 /**
  * 责任链的通用处理器类Handler（通常是一个接口或抽象类）
@@ -155,7 +163,7 @@ class ChainTest
      */
     protected $chain;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->chain = new FastStorage(array('bar' => 'baz'));
         $this->chain->append(new SlowStorage(array('bar' => 'baz', 'foo' => 'bar')));
@@ -199,7 +207,7 @@ class ChainTest
         $this->assertObjectHasAttribute('response', $request);
         $this->assertEquals('bar', $request->response);
         // FastStorage has no 'foo' key, the SlowStorage is responding
-        $className = 'DesignPatterns\Behavioral\ChainOfResponsibilities\Responsible\SlowStorage';
+        $className = 'SlowStorage';
         $this->assertEquals($className, $request->forDebugOnly);
     }
 
@@ -218,5 +226,5 @@ class ChainTest
     }
 }
 $chainTest  = new ChainTest();
-$chainTest::setUp();
+$chainTest->setUp();
 $chainTest->testFastStorage($chainTest->makeRequest());
